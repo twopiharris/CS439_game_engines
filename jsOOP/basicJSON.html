@@ -1,0 +1,76 @@
+<HTML lang = "en-us">
+  <head>
+    <title>basic JSON</title>
+    <script type = "text/javascript">
+      simplest = {
+              1: "standard integer index", 
+              2: "produces something like an array"
+            };
+
+      associative = {
+              "foo": "using a string indexd makes something like a hash or dict",
+              "bar": "dot notation is now available"
+            };
+
+      mixedTypes = {
+              "a": 1,
+              "b": "foo",
+              "c": [4, 5, 6],
+              "d": simplest,
+            };
+
+      addingFunctions = {
+              "name": "Anonymous",
+              "greet": function(){
+                      alert("Hi, my name is " + this.name + "!");
+                    },
+            };
+
+
+    </script>
+  </head>
+
+  <body>
+    <h2>This code is meant to be investigated through the console</h2>
+
+    <p>Try these ideas in the console:</p>
+
+    <h3>List/array</h3>
+    <ul>
+      <li>a = 5; typeof(a);</li>
+      <li>a = -3.5; typeof(a);</li>
+      <li>a = "foo"; typeof(a);</li>
+      <li>a = [1, 2, 3]; typeof(a);table(a);</li>
+      <li>a[0] = 4; a[10] = 5; a; table(a);</li>
+    </ul>
+
+    <h3>JSON / dictionary / hash</h3>
+    <ul>
+      <li>b = {"foo": "Hi I'm foo", "bar": "I am bar"}; foo;</li>
+      <li>b["foo"]; b.foo</li>
+      <li>b.blat = "BLAAAAT"; table(b)</li>
+      <li>b.0 = "won't work"; b[0] = "will work";</li>
+    </ul>
+
+    <h3>Mixing types</h3>
+    <ul>
+      <li>c = [0, "a", "bcde", -3.5, [7, 8, 9]]; c; table(c);</li>
+    </ul>
+
+    <h3>adding a function</h3>
+    <ul>
+      <li>sayHi = function(){alert("hi");};</li>
+      <li>b.greet = sayHi</li>
+      <li>b.sayHi()</li>
+    </ul>
+
+
+    <h3>Look over these variables in console</h3>
+    <ul>
+      <li>simplest</li>
+      <li>associative</li>
+      <li>mixedTypes</li>
+      <li>addingFunctions</li>
+    </ul>
+  </body>
+  </html>
