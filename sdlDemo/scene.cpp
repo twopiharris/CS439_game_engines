@@ -6,14 +6,32 @@
 #define WINDOW_H 600
 #define SQUARE_SIZE 48
 
+class Sprite {
+  private:
+    SDL_Renderer* ren;
+    SDL_Rect rect;
+    SDL_Color color;
+    int x, y;
+    int width, height;
+
+  public:
+    Sprite(SDL_Renderer* ren);
+    void setSize(int width, int height);
+    void setPosition(int x, int y);
+    void setColor(int r, int g, int b, int a);
+    void mainLoop();
+    void process();
+};
+
+
 class Scene {
 
   public:
     Scene(){
-      this->init();
+      this->start();
     } // end constructor
 
-    bool init() {
+    bool start() {
       bool error = false;
       if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         fprintf(stderr, "SDL_Init Error: %s\n", SDL_GetError());
@@ -40,9 +58,10 @@ class Scene {
       }
 
       if (error == false){
-        this->start(ren);
+        this->mainLoop(ren);
       } // end if
 
+    // clean everything up
     SDL_DestroyRenderer(ren);
     SDL_DestroyWindow(win);
     SDL_Quit();
@@ -51,7 +70,7 @@ class Scene {
 
   } // end init
 
-  void start(SDL_Renderer* ren){
+  void mainLoop(SDL_Renderer* ren){
     SDL_Rect player = { WINDOW_W/2 - SQUARE_SIZE/2, WINDOW_H/2 - SQUARE_SIZE/2, SQUARE_SIZE, SQUARE_SIZE };
     const int speed = 300; // pixels per second
 
@@ -59,6 +78,8 @@ class Scene {
     Uint64 now = SDL_GetPerformanceCounter();
     Uint64 last = 0;
     double delta = 0;
+
+    Sprite sprite(ren);
 
     while (keepGoing) {
         last = now;
@@ -78,6 +99,7 @@ class Scene {
                 } // end if
             } // end if
         } // end while
+
 
         const Uint8 *ks = SDL_GetKeyboardState(NULL);
         // keyboard handler here?
@@ -101,12 +123,14 @@ class Scene {
         SDL_RenderClear(ren);
 
         // draw player
-        SDL_SetRenderDrawColor(ren, 220, 80, 60, 255);
-        SDL_RenderFillRect(ren, &player);
+        //SDL_SetRenderDrawColor(ren, 220, 80, 60, 255);
+        //SDL_RenderFillRect(ren, &player);
 
-        SDL_SetRenderDrawColor(ren, 200, 200, 200, 255);
-        SDL_Rect border = {10, 10, WINDOW_W - 20, WINDOW_H - 20};
-        SDL_RenderDrawRect(ren, &border);
+        sprite.mainLoop();
+
+        //SDL_SetRenderDrawColor(ren, 200, 200, 200, 255);
+        //SDL_Rect border = {10, 10, WINDOW_W - 20, WINDOW_H - 20};
+        //SDL_RenderDrawRect(ren, &border);
 
         SDL_RenderPresent(ren);
 
@@ -114,11 +138,51 @@ class Scene {
         SDL_Delay(1);
     }
 
-  } // end start
+  } // end mainLoop
 
 
 }; // end class def
 
+Sprite::Sprite(SDL_Renderer* ren){
+  this->ren = ren;
+  //this->rect = SDL_Rect;
+  this->setSize(50, 50);
+  this->setPosition(100, 100);
+  this->setColor(255, 220, 20, 255);
+} // end constructor
+
+void Sprite::setSize(int width = 25, int height = 25){
+  this->rect.w = width;
+  this->rect.h = height;
+} // end setSize
+
+void Sprite::setPosition(int x = 100, int y = 100){
+  this->rect.x = x;
+  this->rect.y = y;
+} // end setPosition
+
+void Sprite::setColor(int r = 100, int g = 100, int b = 100, int a = 255){
+  this->color.r = r;
+  this->color.g = g;
+  this->color.b = b;
+  this->color.a = a;
+} // end setColor
+
+void Sprite::mainLoop(){
+  this->process();
+  SDL_SetRenderDrawColor(this->ren, this->color.r,
+                                    this->color.g,
+                                    this->color.b,
+                                    this->color.a);
+
+  SDL_RenderFillRect(this->ren, &(this->rect));
+  
+} // end mainLoop()
+
+void Sprite::process(){
+  // abstract method 
+} // end process
+ 
 int main(){
   Scene game;
 }
