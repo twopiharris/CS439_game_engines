@@ -1,5 +1,5 @@
 
-#Basic SDL2 demo that opens a window and moves a square with the arrow keys.
+# Basic SDL2 demo that opens a window and moves a square with the arrow keys.
 
 Build & run (Ubuntu / Debian):
 
