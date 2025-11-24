@@ -1,4 +1,4 @@
-// Simple SDL2 example: move the square with arrow keys, ESC to quit
+// basic scene class
 #include <SDL2/SDL.h>
 #include <stdio.h>
 
@@ -6,55 +6,81 @@
 #define WINDOW_H 600
 #define SQUARE_SIZE 48
 
-int main(int argc, char **argv) {
-    (void)argc; (void)argv;
-    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-        fprintf(stderr, "SDL_Init Error: %s\n", SDL_GetError());
-        return 1;
-    }
+class Scene {
 
-    SDL_Window *win = SDL_CreateWindow("SDL2 Basic Game",
+  public:
+    Scene(){
+      this->init();
+    } // end constructor
+
+    bool init() {
+      bool error = false;
+      if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        fprintf(stderr, "SDL_Init Error: %s\n", SDL_GetError());
+        error = true;
+      } // end if
+
+      SDL_Window *win = SDL_CreateWindow("SDL2 Basic Game",
                                        SDL_WINDOWPOS_CENTERED,
                                        SDL_WINDOWPOS_CENTERED,
                                        WINDOW_W, WINDOW_H,
                                        SDL_WINDOW_SHOWN);
-    if (!win) {
+      if (!win) {
         fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
         SDL_Quit();
-        return 1;
-    }
+        error = true;
+      } // end if
 
-    SDL_Renderer *ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (!ren) {
+      SDL_Renderer *ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+      if (!ren) {
         fprintf(stderr, "SDL_CreateRenderer Error: %s\n", SDL_GetError());
         SDL_DestroyWindow(win);
         SDL_Quit();
-        return 1;
-    }
+        error = true;
+      }
 
+      if (error == false){
+        this->start(ren);
+      } // end if
+
+    SDL_DestroyRenderer(ren);
+    SDL_DestroyWindow(win);
+    SDL_Quit();
+
+    return error;
+
+  } // end init
+
+  void start(SDL_Renderer* ren){
     SDL_Rect player = { WINDOW_W/2 - SQUARE_SIZE/2, WINDOW_H/2 - SQUARE_SIZE/2, SQUARE_SIZE, SQUARE_SIZE };
     const int speed = 300; // pixels per second
 
-    int running = 1;
+    bool keepGoing = true;
     Uint64 now = SDL_GetPerformanceCounter();
     Uint64 last = 0;
     double delta = 0;
 
-    while (running) {
+    while (keepGoing) {
         last = now;
         now = SDL_GetPerformanceCounter();
         delta = (double)((now - last) * 1000) / (double)SDL_GetPerformanceFrequency(); // ms
         double seconds = delta / 1000.0;
 
         SDL_Event e;
+        // put event-handling code here
         while (SDL_PollEvent(&e)) {
-            if (e.type == SDL_QUIT) running = 0;
+            if (e.type == SDL_QUIT){
+              keepGoing = false;
+            } // end if
             if (e.type == SDL_KEYDOWN) {
-                if (e.key.keysym.sym == SDLK_ESCAPE) running = 0;
-            }
-        }
+                if (e.key.keysym.sym == SDLK_ESCAPE){ 
+                  keepGoing = false;
+                } // end if
+            } // end if
+        } // end while
 
         const Uint8 *ks = SDL_GetKeyboardState(NULL);
+        // keyboard handler here?
         int dx = 0, dy = 0;
         if (ks[SDL_SCANCODE_LEFT] || ks[SDL_SCANCODE_A]) dx = -1;
         if (ks[SDL_SCANCODE_RIGHT] || ks[SDL_SCANCODE_D]) dx = 1;
@@ -88,8 +114,12 @@ int main(int argc, char **argv) {
         SDL_Delay(1);
     }
 
-    SDL_DestroyRenderer(ren);
-    SDL_DestroyWindow(win);
-    SDL_Quit();
-    return 0;
+  } // end start
+
+
+}; // end class def
+
+int main(){
+  Scene game;
 }
+
