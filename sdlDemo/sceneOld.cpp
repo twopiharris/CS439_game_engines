@@ -2,18 +2,36 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
 
-#include "scene.h"
-#include "sprite.h"
-
 #define WINDOW_W 800
 #define WINDOW_H 600
 #define SQUARE_SIZE 48
 
-Scene::Scene(){
+class Sprite {
+  private:
+    SDL_Renderer* ren;
+    SDL_Rect rect;
+    SDL_Color color;
+    int x, y;
+    int width, height;
+
+  public:
+    Sprite(SDL_Renderer* ren);
+    void setSize(int width, int height);
+    void setPosition(int x, int y);
+    void setColor(int r, int g, int b, int a);
+    void mainLoop();
+    void process();
+};
+
+
+class Scene {
+
+  public:
+    Scene(){
       this->start();
     } // end constructor
 
-    bool Scene::start() {
+    bool start() {
       bool error = false;
       if (SDL_Init(SDL_INIT_VIDEO) != 0) {
         fprintf(stderr, "SDL_Init Error: %s\n", SDL_GetError());
@@ -50,9 +68,9 @@ Scene::Scene(){
 
     return error;
 
-  } // end start
+  } // end init
 
-  void Scene::mainLoop(SDL_Renderer* ren){
+  void mainLoop(SDL_Renderer* ren){
     SDL_Rect player = { WINDOW_W/2 - SQUARE_SIZE/2, WINDOW_H/2 - SQUARE_SIZE/2, SQUARE_SIZE, SQUARE_SIZE };
     const int speed = 300; // pixels per second
 
@@ -121,4 +139,51 @@ Scene::Scene(){
     }
 
   } // end mainLoop
+
+
+}; // end class def
+
+Sprite::Sprite(SDL_Renderer* ren){
+  this->ren = ren;
+  //this->rect = SDL_Rect;
+  this->setSize(50, 50);
+  this->setPosition(100, 100);
+  this->setColor(255, 220, 20, 255);
+} // end constructor
+
+void Sprite::setSize(int width = 25, int height = 25){
+  this->rect.w = width;
+  this->rect.h = height;
+} // end setSize
+
+void Sprite::setPosition(int x = 100, int y = 100){
+  this->rect.x = x;
+  this->rect.y = y;
+} // end setPosition
+
+void Sprite::setColor(int r = 100, int g = 100, int b = 100, int a = 255){
+  this->color.r = r;
+  this->color.g = g;
+  this->color.b = b;
+  this->color.a = a;
+} // end setColor
+
+void Sprite::mainLoop(){
+  this->process();
+  SDL_SetRenderDrawColor(this->ren, this->color.r,
+                                    this->color.g,
+                                    this->color.b,
+                                    this->color.a);
+
+  SDL_RenderFillRect(this->ren, &(this->rect));
+  
+} // end mainLoop()
+
+void Sprite::process(){
+  // abstract method 
+} // end process
+ 
+int main(){
+  Scene game;
+}
 
