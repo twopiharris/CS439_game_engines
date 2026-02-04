@@ -1,9 +1,9 @@
 #include <SDL2/SDL.h>
 #include "sprite.h"
+#include <iostream>
 
 Sprite::Sprite(SDL_Renderer* ren){
   this->ren = ren;
-  //this->rect = SDL_Rect;
   this->setSize(50, 50);
   this->setPosition(100, 100);
   this->setColor(255, 220, 20, 255);
@@ -41,5 +41,16 @@ void Sprite::process(){
   // abstract method 
 } // end process
  
+bool Sprite::isKeyPressed(SDL_Scancode key){
+  //std::cout << "I got to isKeyPressed: " << key << std::endl;
+  bool result = false; 
+  SDL_PumpEvents();
+	const Uint8 *keyboardState = SDL_GetKeyboardState(NULL);
+  std::cout << "state: " << keyboardState[key] <<std::endl;
+  if (keyboardState[key] == -1){
+    result = true;
+  } // end if
+  return result;
 
+} // end isKeyPressed
 

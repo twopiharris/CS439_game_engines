@@ -9,6 +9,8 @@ class Scene {
     Scene();
     bool start();
     void mainLoop(SDL_Renderer* ren);
+    bool isKeyPressed(SDL_Scancode key);
+
 }; // end class def
 
 #endif

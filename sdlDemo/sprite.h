@@ -18,6 +18,7 @@ class Sprite {
     void setColor(int r, int g, int b, int a);
     void mainLoop();
     void process();
+    bool isKeyPressed(SDL_Scancode);
 };
 
 #endif

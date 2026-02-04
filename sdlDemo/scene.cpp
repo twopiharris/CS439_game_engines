@@ -1,6 +1,7 @@
 // basic scene class
 #include <SDL2/SDL.h>
 #include <stdio.h>
+#include <iostream>
 
 #include "scene.h"
 #include "sprite.h"
@@ -9,7 +10,7 @@
 #define WINDOW_H 600
 #define SQUARE_SIZE 48
 
-Scene::Scene(){
+    Scene::Scene(){
       this->start();
     } // end constructor
 
@@ -82,15 +83,7 @@ Scene::Scene(){
             } // end if
         } // end while
 
-
-        const Uint8 *ks = SDL_GetKeyboardState(NULL);
-        // keyboard handler here?
-        int dx = 0, dy = 0;
-        if (ks[SDL_SCANCODE_LEFT] || ks[SDL_SCANCODE_A]) dx = -1;
-        if (ks[SDL_SCANCODE_RIGHT] || ks[SDL_SCANCODE_D]) dx = 1;
-        if (ks[SDL_SCANCODE_UP] || ks[SDL_SCANCODE_W]) dy = -1;
-        if (ks[SDL_SCANCODE_DOWN] || ks[SDL_SCANCODE_S]) dy = 1;
-
+/*
         player.x += (int)(dx * speed * seconds);
         player.y += (int)(dy * speed * seconds);
 
@@ -99,6 +92,7 @@ Scene::Scene(){
         if (player.y < 0) player.y = 0;
         if (player.x + player.w > WINDOW_W) player.x = WINDOW_W - player.w;
         if (player.y + player.h > WINDOW_H) player.y = WINDOW_H - player.h;
+*/
 
         // render
         SDL_SetRenderDrawColor(ren, 30, 30, 40, 255);
@@ -107,6 +101,13 @@ Scene::Scene(){
         // draw player
         //SDL_SetRenderDrawColor(ren, 220, 80, 60, 255);
         //SDL_RenderFillRect(ren, &player);
+
+        int currentX = 100;
+        if (this->isKeyPressed(SDL_SCANCODE_A)){
+          printf("a pressed");
+          currentX += 2;
+          sprite.setPosition(currentX, 100);
+        }
 
         sprite.mainLoop();
 
@@ -121,4 +122,18 @@ Scene::Scene(){
     }
 
   } // end mainLoop
+
+  bool Scene::isKeyPressed(SDL_Scancode key){
+    //std::cout << "I got to isKeyPressed: " << key << std::endl;
+    bool result = false; 
+    SDL_PumpEvents();
+    const Uint8 *keyboardState = SDL_GetKeyboardState(NULL);
+    std::cout << "state: " << keyboardState[key] <<std::endl;
+    if (keyboardState[key] == -1){
+      result = true;
+    } // end if
+    return result;
+
+  } // end isKeyPressed
+
 
