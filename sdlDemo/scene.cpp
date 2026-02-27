@@ -63,6 +63,9 @@
     double delta = 0;
 
     Sprite sprite(ren);
+    
+    int currentX = 100;
+    int currentY = 100;
 
     while (keepGoing) {
         last = now;
@@ -102,12 +105,20 @@
         //SDL_SetRenderDrawColor(ren, 220, 80, 60, 255);
         //SDL_RenderFillRect(ren, &player);
 
-        int currentX = 100;
         if (this->isKeyPressed(SDL_SCANCODE_A)){
-          printf("a pressed");
-          currentX += 2;
-          sprite.setPosition(currentX, 100);
+          currentX -= 2;
+	}
+	if (this->isKeyPressed(SDL_SCANCODE_D)){
+	  currentX += 2;
         }
+        if (this->isKeyPressed(SDL_SCANCODE_W)){
+          currentY -= 2;
+	}
+        if (this->isKeyPressed(SDL_SCANCODE_S)){
+          currentY += 2;
+	}
+        sprite.setPosition(currentX, currentY);
+
 
         sprite.mainLoop();
 
@@ -128,8 +139,7 @@
     bool result = false; 
     SDL_PumpEvents();
     const Uint8 *keyboardState = SDL_GetKeyboardState(NULL);
-    std::cout << "state: " << keyboardState[key] <<std::endl;
-    if (keyboardState[key] == -1){
+    if (keyboardState[key]){
       result = true;
     } // end if
     return result;
