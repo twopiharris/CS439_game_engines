@@ -3,6 +3,7 @@
 #include "sprite.h"
 
 int main(){
-  Scene scene;
+  Scene game;
+  game.start();
   return 0;
 } // end main

@@ -11,7 +11,9 @@
 #define SQUARE_SIZE 48
 
     Scene::Scene(){
-      this->start();
+      this->width = WINDOW_W;
+      this->height = WINDOW_H;
+      //this->start();
     } // end constructor
 
     bool Scene::start() {
@@ -32,8 +34,9 @@
         error = true;
       } // end if
 
-      SDL_Renderer *ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-      if (!ren) {
+      this->ren = SDL_CreateRenderer(win, -1, 
+          SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+      if (!this->ren) {
         fprintf(stderr, "SDL_CreateRenderer Error: %s\n", SDL_GetError());
         SDL_DestroyWindow(win);
         SDL_Quit();
@@ -41,7 +44,7 @@
       }
 
       if (error == false){
-        this->mainLoop(ren);
+        this->mainLoop();
       } // end if
 
     // clean everything up
@@ -53,8 +56,8 @@
 
   } // end start
 
-  void Scene::mainLoop(SDL_Renderer* ren){
-    SDL_Rect player = { WINDOW_W/2 - SQUARE_SIZE/2, WINDOW_H/2 - SQUARE_SIZE/2, SQUARE_SIZE, SQUARE_SIZE };
+  void Scene::mainLoop(){
+    
     const int speed = 300; // pixels per second
 
     bool keepGoing = true;
@@ -62,7 +65,7 @@
     Uint64 last = 0;
     double delta = 0;
 
-    Sprite sprite(ren);
+    Sprite sprite(this);
     
     int currentX = 100;
     int currentY = 100;
@@ -86,47 +89,15 @@
             } // end if
         } // end while
 
-/*
-        player.x += (int)(dx * speed * seconds);
-        player.y += (int)(dy * speed * seconds);
-
-        // clamp to window
-        if (player.x < 0) player.x = 0;
-        if (player.y < 0) player.y = 0;
-        if (player.x + player.w > WINDOW_W) player.x = WINDOW_W - player.w;
-        if (player.y + player.h > WINDOW_H) player.y = WINDOW_H - player.h;
-*/
-
         // render
-        SDL_SetRenderDrawColor(ren, 30, 30, 40, 255);
-        SDL_RenderClear(ren);
-
-        // draw player
-        //SDL_SetRenderDrawColor(ren, 220, 80, 60, 255);
-        //SDL_RenderFillRect(ren, &player);
-
-        if (this->isKeyPressed(SDL_SCANCODE_A)){
-          currentX -= 2;
-	}
-	if (this->isKeyPressed(SDL_SCANCODE_D)){
-	  currentX += 2;
-        }
-        if (this->isKeyPressed(SDL_SCANCODE_W)){
-          currentY -= 2;
-	}
-        if (this->isKeyPressed(SDL_SCANCODE_S)){
-          currentY += 2;
-	}
-        sprite.setPosition(currentX, currentY);
-
+        SDL_SetRenderDrawColor(this->ren, 30, 30, 40, 255);
+        SDL_RenderClear(this->ren);
 
         sprite.mainLoop();
+        this->process();
 
-        //SDL_SetRenderDrawColor(ren, 200, 200, 200, 255);
-        //SDL_Rect border = {10, 10, WINDOW_W - 20, WINDOW_H - 20};
-        //SDL_RenderDrawRect(ren, &border);
 
-        SDL_RenderPresent(ren);
+        SDL_RenderPresent(this->ren);
 
         // small delay to avoid 100% CPU in case vsync is off
         SDL_Delay(1);
@@ -134,10 +105,14 @@
 
   } // end mainLoop
 
+  void Scene::process(){
+    // generally an abstract function
+
+  } // end process
+
   bool Scene::isKeyPressed(SDL_Scancode key){
-    //std::cout << "I got to isKeyPressed: " << key << std::endl;
     bool result = false; 
-    SDL_PumpEvents();
+    //SDL_PumpEvents();
     const Uint8 *keyboardState = SDL_GetKeyboardState(NULL);
     if (keyboardState[key]){
       result = true;
@@ -146,4 +121,14 @@
 
   } // end isKeyPressed
 
+  SDL_Renderer* Scene::getRen(){
+    return this->ren;
+  }  // end getRen
 
+  int Scene::getWidth(){
+	  return this->width;
+  } // end getWidth
+    
+  int Scene::getHeight(){
+    return this->height;
+  } // end getHeight
